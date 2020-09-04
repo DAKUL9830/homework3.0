@@ -36,13 +36,16 @@ class App extends React.Component{
 
     }
     render(){
+        let style={
+            backgroundColor:'lightgrey'
+        }
         
         const{states,selectedState}=this.state;
         const{selectState}=this;
     return(
         
-    <div>
-        <h1>Amazing places of The Uniteed States</h1>
+    <div style={style}>
+        <h1>Amazing places of The United States</h1>
         {selectedState.id ?(
             <SingleState selectedState={selectedState} />
           ) : 
