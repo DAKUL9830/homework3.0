@@ -10,11 +10,26 @@ class App extends React.Component{
             states:[],
             selectedState:{},
             stateId:'',
+            isClicked:false,
+            
 
         },
         this.selectState=this.selectState.bind(this);
+        this.deSelected=this.deSelected.bind(this)
+        
     }
     async componentDidMount(){
+        window.addEventListener('hashchange',async()=>{
+            const stateId=window.location.hash.slice(1);
+           
+            const res=await axios.get(`/api/states/${stateId}`);
+            const selectedState=res.data;
+            this.setState({selectedState})
+        })
+        const stateId=window.location.hash.slice(1);
+        const respon=await axios.get(`/api/states/${stateId}`);
+        const selectedState=respon.data;
+        this.setState({selectedState})
         try{
             const response=await axios.get('/api/states');
             const states=response.data;
@@ -23,6 +38,19 @@ class App extends React.Component{
             console.log('You ve  got some issues with connection of states')
         }
     }
+//     async returning(){
+//     try{
+//         const response=await axios.get('/api/states');
+//         const states=response.data;
+//         this.setState({states})
+//     }catch(err){
+//         console.log('You ve  got some issues with connection of states')
+//     }
+// }
+    // handleClick=()=>{
+    //     this.setState.bind({isClicked:true})
+    // }
+
 
     async  selectState(stateId){
         
@@ -35,27 +63,33 @@ class App extends React.Component{
         }
 
     }
+    deSelected(){
+        this.setState({
+            selectedState:{},
+        })
+    }
     render(){
         let style={
             backgroundColor:'lightgrey'
         }
         
-        const{states,selectedState}=this.state;
-        const{selectState}=this;
+        const{states,selectedState,isClicked}=this.state;
+        const{selectState,deSelected}=this;
     return(
         
-    <div style={style}>
+    <div style={style} >
         <h1>Amazing places of The United States</h1>
         {selectedState.id ?(
-            <SingleState selectedState={selectedState} />
+            <SingleState selectedState={selectedState}  deSelected={deSelected}/>
           ) : 
-        <ul >
+        <ul>
                    
                   {states.map(state =>
                       (
                           <li key={state.id} onClick={()=>selectState(state.id)}>
-                              
+                              <a href={`#${state.id}`}>
                               <h3>{state.name}</h3>
+                              </a>
                               
                               
                           </li>
